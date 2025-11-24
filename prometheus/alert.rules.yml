@@ -1,0 +1,29 @@
+groups:
+  - name: fibonacci-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is above 0.1 per second for the last 5 minutes"
+
+      - alert: CircuitBreakerOpen
+        expr: circuit_breaker_state_changes{state="open"} > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker is open"
+          description: "Circuit breaker has been open for more than 1 minute"
+
+      - alert: RedisDown
+        expr: up{job="fibonacci-app"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis is down"
+          description: "Redis connection has been down for 2 minutes"
